@@ -4,6 +4,12 @@ this repo will serve as the master for a jenkins pipeline previously built for a
 ![jenkins-pipeline-code-deployment-diagram](images/jenkins-pipeline-code-deployment.png)
 
 
+## prerequisites
+
+- awscli configured for account you want to deploy resources to.
+- docker installation and knowledge of how to use docker
+- knowledge of jenkins
+
 ## build jenkins server
 
 - AWS documentation for this build can be found in whitepapers so I won't be going into the details. See of commands below to build a baseline.
@@ -40,3 +46,28 @@ http://<your_server_public_DNS>:8080
 ```
 
 - That's it! Now that your Jenkins instance is up and running. We'll go setup a certificate and Route53 alias for a cleaner/secure url. This step is optional if you don't have a domain registar or don't require SSL.
+
+## setup up docker image and ecr (setup assumes you have awscli to aws account)
+
+- log into ecr to create and store docker image.
+```
+aws ecr get-login
+aws ecr create-repository --repository-name <your_repository_name>
+aws ecr describe-repositories
+aws ecr list-images --repository-name <your_repository_name>
+```
+
+- we are going to use an nginx image as an example here, but you can pull whichever image needed for your project
+```
+docker pull nginx:1.9
+docker tag nginx:1.9 <your_aws_account_number>.dkr.ecr.us-east-1.amazonaws.com/ecs-test/nginx:1.9
+docker push <your_aws_account_number>.dkr.ecr.us-east-1.amazonaws.com/ecs-test/nginx
+aws ecr list-images --repository-name <your_repository_name>
+```
+
+## task definitions
+
+## optional jenkins-codebuild via cloudformation template
+
+- Optionally, a jenkins/codebuild can be created and configured more easily via a cloudformation template.
+- Reference: https://aws.amazon.com/blogs/devops/simplify-your-jenkins-builds-with-aws-codebuild/
