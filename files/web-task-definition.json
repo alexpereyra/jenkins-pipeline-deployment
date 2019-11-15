@@ -1,0 +1,17 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "nginx",
+      "image": "<your_aws_account_number>.dkr.ecr.us-east-1.amazonaws.com/<ecs_cluster_name>/nginx:1.9",
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 80
+        }
+      ],
+      "memory": 50,
+      "cpu": 102
+    }
+  ],
+  "family": "web"
+}
