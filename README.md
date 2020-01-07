@@ -155,10 +155,23 @@ aws ecr delete-repository --repository-name <ecr_repo_name> --force
 aws ecs delete-cluster --cluster <ecs_cluster_name>
 ```
 
-## optional jenkins-codebuild via cloudformation template
+## optional jenkins-codebuild via cloudformation templates
 
 - Optionally, a jenkins/codebuild can be created and configured more easily via a cloudformation template.
 - Reference: https://aws.amazon.com/blogs/devops/simplify-your-jenkins-builds-with-aws-codebuild/
 
 - Updated Jenkins pipeline build from AWS DevOps Blog leveraging CodeDeploy in addition
 - Reference https://aws.amazon.com/blogs/devops/setting-up-a-ci-cd-pipeline-by-integrating-jenkins-with-aws-codebuild-and-aws-codedeploy/
+
+## cloudformation template for jenkins instance configured
+
+- jenkins-instance.json is a cloudformation template to deploy just the jenkins instance with configuration.
+- note that you will need to ssh into it to get initial admin password
+- use command below to launch stack via commandline
+```
+aws cloudformation create-stack --capabilities CAPABILITY_IAM --parameters ParameterKey=JenkinsInstanceType,ParameterValue=t2.medium ParameterKey=KeyName,ParameterValue=<pem_key_here> ParameterKey=PublicSubnet1,ParameterValue=subnet-id-here>  ParameterKey=VpcId,ParameterValue=vpc-id-here> ParameterKey=YourIPRange,ParameterValue=<your_ip> --stack-name jenkins-instance --region us-east-1 --template-body file://jenkins-instance.json
+```
+- to delete stack after use
+```
+aws cloudformation delete-stack --stack-name jenkins-instance
+```
