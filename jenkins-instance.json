@@ -14,6 +14,11 @@
       "Type": "AWS::EC2::KeyPair::KeyName",
       "ConstraintDescription": "must be the name of an existing EC2 KeyPair."
     },
+    "PhoneNumber": {
+      "Type": "String",
+      "Default": "+1555-555-5555",
+      "Description": "Enter your phone number to be sent your Jenkins Login Info. Must be formatted like +1xxx-xxx-xxxx."
+    },
     "VpcId": {
       "Description": "The VPC Id where the EC2 instances will be launched.",
       "Type": "AWS::EC2::VPC::Id",
@@ -31,7 +36,7 @@
       "Description": "The first public subnet where the Jenkins EC2 instance",
       "Type": "AWS::EC2::Subnet::Id",
       "ConstraintDescription": "Must be a valid Public VPC Subnet."
-    },
+    }
   },
 
   "Mappings": {
@@ -187,10 +192,10 @@
                                 "sudo yum update -y\n",
                                 "sudo yum install jenkins -y\n",
 
-                                "# Set Java home path",
-                                "JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.amzn2.0.1.x86_64",
-                                "export JAVA_HOME",
-                                "PATH=$PATH:$JAVA_HOME",
+                                "# Set Java home path\n",
+                                "JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.amzn2.0.1.x86_64\n",
+                                "export JAVA_HOME\n",
+                                "PATH=$PATH:$JAVA_HOME\n",
 
                                 "sudo service jenkins start\n",
                                 "sudo chkconfig jenkins on\n",
@@ -217,6 +222,7 @@
                                 "sudo su - jenkins --shell /bin/bash -c \"aws configure set output json\" \n",
                                 "#until [ -f /var/lib/jenkins/jenkins.install.InstallUtil.lastExecVersion ]; do   sleep 5; service jenkins restart; done\n",
                                 "while [ ! -f /var/lib/jenkins/jenkins.install.InstallUtil.lastExecVersion ]; do echo waiting for jenkins to finish setup; sleep 10; done; service jenkins restart\n",
+                                "aws sns publish --phone-number ${PhoneNumber} --message 'Your Jenkins Username is \"admin\" and Password is: $(cat /var/lib/jenkins/secrets/initialAdminPassword)'\n",
                 "\n"
                             ]
                         ]
@@ -315,7 +321,7 @@
           "Ref" : "JenkinsRole"
         } ]
       }
-    },
+    }
   },
   "Outputs" : {
     "JenkinsServerDNSName" : {

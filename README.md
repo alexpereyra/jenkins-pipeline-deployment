@@ -168,9 +168,11 @@ aws ecs delete-cluster --cluster <ecs_cluster_name>
 - jenkins-instance.json is a cloudformation template to deploy just the jenkins instance with configuration.
 - note that you will need to ssh into it to get initial admin password
 - use command below to launch stack via commandline
+- see jenkins documentation for more info - https://jenkins.io/doc/book/installing/#unlocking-jenkins
 ```
 aws cloudformation create-stack --capabilities CAPABILITY_IAM --parameters ParameterKey=JenkinsInstanceType,ParameterValue=t2.medium ParameterKey=KeyName,ParameterValue=<pem_key_here> ParameterKey=PublicSubnet1,ParameterValue=subnet-id-here>  ParameterKey=VpcId,ParameterValue=vpc-id-here> ParameterKey=YourIPRange,ParameterValue=<your_ip> --stack-name jenkins-instance --region us-east-1 --template-body file://jenkins-instance.json
 ```
+
 - to delete stack after use
 ```
 aws cloudformation delete-stack --stack-name jenkins-instance
